@@ -32,7 +32,7 @@
 /*
 //		Quickly generate Gets/Sets Refs of the given type
 */
-#define mGETSET_REF(T) \
+#define mCREATE_GETSET_REF(T) \
 	T get_##T(const array_t* from, u32 at); \
 	void set_##T(const array_t* from, u32 at, T v);
 
