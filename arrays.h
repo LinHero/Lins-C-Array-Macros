@@ -11,8 +11,9 @@
 
 
 
+
 //__________________________________________________________________//
-//			Macros													//
+//			Macros & Defines										//
 //__________________________________________________________________//
 
 
@@ -20,82 +21,161 @@
 //		Quickly generate Gets/Sets of the given type
 */
 #define mCREATE_GETSET(T) \
-	T get_##T(const array_t* from, u32 at){ \
-		assert((at < from->size) && "Exceeded size of array"); \
-		assert(((sizeof(T) * (at + 1)) <= from->capacity) && "Request exceeds array size"); \
-		return ((T*)from->data)[at]; } \
-	void set_##T(const array_t* from, u32 at, T v){ \
-		assert((at < from->size) && "Exceeded size of array"); \
-		assert(((sizeof(T) * (at + 1)) <= from->capacity) && "Request exceeds array size"); \
-		((T*)from->data)[at] = (T)v; }
+	static inline T get_##T(const array_t* from, u32 at){ \
+		assert(((sizeof(T) * (at + 1)) <= from->capacity) && "Exceeded Array Size"); \
+		return ((T*)from->data)[at]; \
+	} \
+	static inline void set_##T(const array_t* from, u32 at, T v){ \
+		assert(((sizeof(T) * (at + 1)) <= from->capacity) && "Exceeded Array Size"); \
+		((T*)from->data)[at] = v; \
+	}
 
 /*
-//		Quickly generate Gets/Sets Refs of the given type
+//		Quickly generate Gets/Sets of the given type's pointer
 */
-#define mCREATE_GETSET_REF(T) \
-	T get_##T(const array_t* from, u32 at); \
-	void set_##T(const array_t* from, u32 at, T v);
+#define mCREATE_GETSET_PTR(T) \
+	static inline T* get_##T##_ptr(const array_t* from, u32 at){ \
+		assert(((sizeof(T*) * (at + 1)) <= from->capacity) && "Exceeded Array Size"); \
+		return ((T**)from->data)[at]; \
+	} \
+	static inline void set_##T##_ptr(const array_t* from, u32 at, T* v){ \
+		assert(((sizeof(T*) * (at + 1)) <= from->capacity) && "Exceeded Array Size"); \
+		((T**)from->data)[at] = v; \
+	}
+
+
 
 
 /*
 //		Create an array of given type
 //		Pass data for said type
 */
-#define mARRAY_DATA(type, name, ...) \
-	type array_##name[] = (type[])__VA_ARGS__; \
-	const array_t name = { \
-		.size = sizeof((type[])__VA_ARGS__) / sizeof(type), \
-		.capacity = sizeof((type[])__VA_ARGS__), \
-		.data = &array_##name }
+#define mARRAY_DATA(ltype, lname, ...) \
+	ltype array_##lname[] = (ltype[])__VA_ARGS__; \
+	const array_t lname = { \
+		.size = sizeof((ltype[])__VA_ARGS__) / sizeof(ltype), \
+		.capacity = sizeof((ltype[])__VA_ARGS__), \
+		.data = &array_##lname \
+	}
 
 /*
 //		Create an array of given type
 //		Pass size for the array
 */
-#define mARRAY_SIZE(type, name, size) \
-	type array_##name[size]; \
-	const array_t name = { \
-		.size = size, \
-		.capacity = size * sizeof(type), \
-		.data = &array_##name }
+#define mARRAY_SIZE(ltype, lname, lsize) \
+	ltype array_##lname[lsize]; \
+	const array_t lname = { \
+		.size = lsize, \
+		.capacity = lsize * sizeof(ltype), \
+		.data = &array_##lname \
+	}
 
 /*
 //		Create an array of given type
 //		Pass size & data for the array
 */
-#define mARRAY_SDAT(type, name, size, ...) \
-	type array_##name[size] = (type[])__VA_ARGS__; \
+#define mARRAY_SIZEDATA(ltype, lname, lsize, ...) \
+	ltype array_##lname[lsize] = (ltype[])__VA_ARGS__;; \
 	const array_t name = { \
-		.size = size, \
-		.capacity = size * sizeof(type), \
-		.data = &array_##name }
+		.size = lsize, \
+		.capacity = lsize * sizeof(ltype), \
+		.data = &array_##lname \
+	}
+
+
+/*
+//		Create an array of given type's pointer
+//		Pass data for said type's ptr
+*/
+#define mARRAY_DATA_PTR(ltype, lname, ...) \
+	ltype* array_##lname[] = (ltype*[])__VA_ARGS__; \
+	const array_t lname = { \
+		.size = sizeof((ltype*[])__VA_ARGS__) / sizeof(ltype), \
+		.capacity = sizeof((ltype*[])__VA_ARGS__), \
+		.data = &array_##lname \
+	}
+
+/*
+//		Create an array of given type's pointer
+//		Pass size for the array
+*/
+#define mARRAY_SIZE_PTR(ltype, lname, lsize) \
+	ltype* array_##lname[lsize]; \
+	const array_t lname = { \
+		.size = lsize, \
+		.capacity = lsize * sizeof(ltype), \
+		.data = &array_##lname \
+	}
+
+/*
+//		Create an array of given type's pointer
+//		Pass size & data for the array
+*/
+#define mARRAY_SIZEDATA_PTR(ltype, lname, lsize, ...) \
+	ltype* array_##lname[lsize] = (ltype*[])__VA_ARGS__;; \
+	const array_t name = { \
+		.size = lsize, \
+		.capacity = lsize * sizeof(ltype*), \
+		.data = &array_##lname \
+	}
+
+
+
+
+/*
+//		Access a value from an array
+*/
+#define mARRAY_GET(ltype, lname, lind) \
+	get_##ltype(&lname, lind)
+
+/*
+//		Write a value to an array
+*/
+#define mARRAY_SET(ltype, lname, lind, lval) \
+	set_##ltype(&lname, lind, lval)
+	
+/*
+//		Access a pointer from an array
+*/
+#define mARRAY_GET_PTR(ltype, lname, lind) \
+	get_##ltype##_ptr(&lname, lind)
+
+/*
+//		Write a pointer to an array
+*/
+#define mARRAY_SET_PTR(ltype, lname, lind, lval) \
+	set_##ltype##_ptr(&lname, lind, lval)
 
 
 
 
 //__________________________________________________________________//
-//			Struct Declaration										//
+//			Struct Definition										//
 //__________________________________________________________________//
 
 
 typedef struct array{
-	u32 size;		//Defines size in Elements
-	u32 capacity;	//Defines size in Bytes
-	const void* data;
+	u32 size;			//Size in Elements
+	u32 capacity;		//Size in Bytes
+	const void* data;	//Pointer to data
 }array_t;
 
 
 
 
 //__________________________________________________________________//
-//			Function Declaration									//
+//			Function Definition										//
 //__________________________________________________________________//
 
 
-mGETSET_REF(u8);
-mGETSET_REF(u16);
-mGETSET_REF(u32);
-mGETSET_REF(float);
+mCREATE_GETSET(u8);
+mCREATE_GETSET(u16);
+mCREATE_GETSET(u32);
+mCREATE_GETSET(float);
 
+mCREATE_GETSET_PTR(u8);
+mCREATE_GETSET_PTR(u16);
+mCREATE_GETSET_PTR(u32);
+mCREATE_GETSET_PTR(float);
 
 
