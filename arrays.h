@@ -176,14 +176,14 @@ typedef struct array{
 //__________________________________________________________________//
 
 
-mCREATE_GETSET(u8);
-mCREATE_GETSET(u16);
-mCREATE_GETSET(u32);
+mCREATE_GETSET(uint8_t);
+mCREATE_GETSET(uint16_t);
+mCREATE_GETSET(uint32_t);
 mCREATE_GETSET(float);
 
-mCREATE_GETSET_PTR(u8);
-mCREATE_GETSET_PTR(u16);
-mCREATE_GETSET_PTR(u32);
+mCREATE_GETSET_PTR(uint8_t);
+mCREATE_GETSET_PTR(uint16_t);
+mCREATE_GETSET_PTR(uint32_t);
 mCREATE_GETSET_PTR(float);
 
 
