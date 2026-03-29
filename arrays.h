@@ -26,6 +26,10 @@
 	static inline void set_##T(const array_t* from, u32 at, T v){ \
 		assert(((sizeof(T) * (at + 1)) <= from->capacity) && "Exceeded Array Size"); \
 		((T*)from->data)[at] = v; \
+	} \
+	static inline T* get_##T##_addr(const array_t* from, u32 at){ \
+		assert(((sizeof(T*) * (at + 1)) <= from->capacity) && "Exceeded Array Size"); \
+		return &((T*)from->data)[at]; \
 	}
 
 /*
@@ -131,7 +135,13 @@
 */
 #define mARRAY_SET(ltype, lname, lind, lval) \
 	set_##ltype(&lname, lind, lval)
-	
+
+/*
+//		Access the address of an array index
+*/
+#define mARRAY_GET_ADDR(ltype, lname, lind) \
+	get_##ltype##_addr(&lname, lind)
+
 /*
 //		Access a pointer from an array
 */
