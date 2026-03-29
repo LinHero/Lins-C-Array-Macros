@@ -26,5 +26,8 @@ Args for Get                                  "mARRAY_GET(type, name, ind)"
 Args for Set                                  "mARRAY_SET(type, name, ind, val)"
 
 Like all others, _PTR can be appended at the end to access an array of pointers.
+A special get type does exist though, that does NOT have a PTR equal.
+mARRAY_GET_ADDR, using the same args as the regular get,
+Returns a const* to the address of a given index's location.
 
     - Lin Hero
