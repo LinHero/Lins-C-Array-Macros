@@ -1,8 +1,11 @@
 # Basic Memory Safe Arrays in C
 A file I created inspired by the "Tips for C Programming" video by Nic Barker.
 Creates some simple memory safe array macros, which allows bounds checking.
+There are multiple array types, and with them their own macros.
 
-Their use is very easy, and a few examples are in the "arrays.h" file.
+
+type ARRAY_1D
+
 To have an array, simply call mARRAY<SUFFIX>
 Followed by the info you want.
 If you want to pass a series of elements,    "mARRAY_DATA(type, name, {elements})"
@@ -15,19 +18,17 @@ the _PTR suffix handles any data you wish to handle via pointers,
 and is ideal over <type>* on the regular mARRAY.
 
 
-To access the arrays, you need to define 1 thing,
-the type's GETSET functions, which can be done via mCREATE_GETSET(type)
-mCREATE_GETSET does not automatically create pointer types.
-Append _PTR, like above, to create the GETSET routines. "mCREATE_GETSET_PTR(type)"
-
 To access the data in an array, either to read or write.
-You can then call mARRAY_GET, or mARRAY_SET.
+You can then call mARRAY_GET, mARRAY_SET, or mARRAY_GET_ADDR.
 Args for Get                                  "mARRAY_GET(type, name, ind)"
 Args for Set                                  "mARRAY_SET(type, name, ind, val)"
+Args for Get_Addr                             "mARRAY_GET(type, name, ind)"
 
 Like all others, _PTR can be appended at the end to access an array of pointers.
-A special get type does exist though, that does NOT have a PTR equal.
-mARRAY_GET_ADDR, using the same args as the regular get,
-Returns a const* to the address of a given index's location.
+mARRAY_GET_ADDR returns a pointer to the address of an index for a given array
+
+
+
+
 
     - Lin Hero
