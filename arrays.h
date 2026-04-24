@@ -1,6 +1,3 @@
-
-
-
 #pragma once
 
 
@@ -26,7 +23,8 @@
 	{ \
 		.size = lsize, \
 		.elm_size = sizeof(ltype), \
-		.data = laddr \
+		.data = laddr, \
+		.type = ARRAY_1D \
 	}
 
 
@@ -72,47 +70,7 @@
 		.type = ARRAY_1D \
 	}
 
-/*
-//		Create an array of given type's pointer
-//		Pass data of said type's ptr
-*/
-#define mARRAY_DATA_PTR(ltype, lname, ...) \
-	ltype* array_##lname[] = __VA_ARGS__; \
-	const array_t lname = { \
-		.size = sizeof((ltype*[])__VA_ARGS__) / sizeof(ltype*), \
-		.elm_size = sizeof(ltype*), \
-		.last = (sizeof((ltype*[])__VA_ARGS__) / sizeof(ltype*)) - 1, \
-		.data = &array_##lname, \
-		.type = ARRAY_1D \
-	}
 
-/*
-//		Create an array of given type's pointer
-//		Pass size for the array
-*/
-#define mARRAY_SIZE_PTR(ltype, lname, lsize) \
-	ltype* array_##lname[lsize] = {0}; \
-	const array_t lname = { \
-		.size = lsize, \
-		.elm_size = sizeof(ltype*), \
-		.last = lsize - 1, \
-		.data = &array_##lname, \
-		.type = ARRAY_1D \
-	}
-
-/*
-//		Create an array of given type's pointer
-//		Pass size & data for the array
-*/
-#define mARRAY_SIZEDATA_PTR(ltype, lname, lsize, ...) \
-	ltype* array_##lname[lsize] = __VA_ARGS__; \
-	const array_t lname = { \
-		.size = lsize, \
-		.elm_size = sizeof(ltype*), \
-		.last = (sizeof((ltype*[])__VA_ARGS__) / sizeof(ltype*)) - 1, \
-		.data = &array_##lname, \
-		.type = ARRAY_1D \
-	}
 
 
 /*
@@ -122,6 +80,7 @@
 		assert(((sizeof(ltype) * (lind + 1)) <= ((lname).size * (lname).elm_size)) && "\n\tExceeded Array Size"); \
 		((ltype*)(lname).data)[lind]; \
 	})
+	
 /*
 //		Write a value to an array
 */
@@ -138,30 +97,6 @@
 		&((ltype*)(lname).data)[lind]; \
 	})
 	
-/*
-//		Access a pointer from an array
-*/
-#define mARRAY_GET_PTR(ltype, lname, lind) ({\
-		assert(((sizeof(ltype*) * (lind + 1)) <= ((lname).size * (lname).elm_size)) && "\n\tExceeded Array Size"); \
-		((ltype**)(lname).data)[lind]; \
-	})
-
-/*
-//		Write a pointer to an array
-*/
-#define mARRAY_SET_PTR(ltype, lname, lind, lval) ({\
-		assert(((sizeof(ltype*) * (lind + 1)) <= ((lname).size * (lname).elm_size)) && "\n\tExceeded Array Size"); \
-		((ltype**)(lname).data)[lind] = lval; \
-	})
-
-/*
-//		Access the address of an array index
-*/
-#define mARRAY_GET_ADDR_PTR(ltype, lname, lind) ({\
-		assert(((sizeof(ltype*) * (lind + 1)) <= ((lname).size * (lname).elm_size)) && "\n\tExceeded Array Size"); \
-		&((ltype**)(lname).data)[lind]; \
-	})
-
 
 
 //				Stacks & Queues
@@ -360,6 +295,8 @@ typedef struct array{
 	u32 elm_size;		//Size of Elements
 	u32 size;			//Size in Elements
 	
+	u8 type;			//Holds the array's type
+	const void* data;	//Pointer to data
 	
 	union{
 		struct{			//Stacks and Queues
@@ -370,9 +307,6 @@ typedef struct array{
 		};
 	};
 	
-	
-	u8 type;			//Holds the array's type
-	const void* data;	//Pointer to data
 }array_t;
 
 
